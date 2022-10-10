@@ -2,19 +2,15 @@
 
 {% block title %}Création d'une annonce{% endblock %}
 
+{% form_theme myform _self %}
+
 {% block body %}
     <div class="container">
         <h1>Création d'une nouvelle annonce</h1>
-        {{form_start(form)}}
+        {{form_start(myform)}}
             <div class="container">
                 <div>
-                    {# {{form_label(form.title)}}
-                    {{form_widget(form.title)}}
-                     {{form_label(form.introduction)}}
-                    {{form_widget(form.introduction)}} #}
-
-                    {{form_row(form.title)}}
-                    {{form_row(form.introduction)}}
+                    {{form_widget(myform)}}
                 </div>
             </div>
 
@@ -22,8 +18,29 @@
            
         
             <button type="submit" class="btn btn-primary mt-3">Création d'une annonce</button>
-        {{form_end(form)}}
+        {{form_end(myform)}}
 
 
     </div>
+{% endblock %}
+
+{% block form_row %}
+    {# {{dump()}} #}
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-6">
+                {{form_label(form)}}
+            </div>
+            <div class="col-6">
+                {# {{form_widget(form, {'attr':{'class':'form-control'}})}} #}
+                {{form_widget(form)}}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block text_widget %}
+    <input type="text" name="{{full_name}}" id="{{id}}" class="form-control">
 {% endblock %}
