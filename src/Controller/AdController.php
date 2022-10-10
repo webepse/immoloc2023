@@ -8,9 +8,16 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 class AdController extends AbstractController
 {
+    /**
+     * Permet d'afficher l'ensemble des annonces
+     *
+     * @param AdRepository $repo
+     * @return Response
+     */
     #[Route('/ads', name: 'ads_index')]
     public function index(AdRepository $repo): Response
     {
@@ -22,18 +29,41 @@ class AdController extends AbstractController
         ]);
     }
 
-    // #[Route('/ads/{slug}', name:'ads_show')]
-    // public function show(string $slug, ManagerRegistry $doctrine):Response
-    // {
-    //     $repo = $doctrine->getRepository(Ad::class);
-    //     $ad = $repo->findOneBySlug($slug);
+    #[Route("/ads/new", name:"ads_create")]
+    public function create(): Response
+    {
+        $ad = new Ad();
 
-    //     return $this->render('ad/show.html.twig',[
-    //         'ad' => $ad
-    //     ]);
-    // }
+        // $form = $this->createFormBuilder($ad)
+        //             ->add('title')
+        //             ->add('introduction')
+        //             ->add('content')
+        //             ->add('rooms')
+        //             ->add('price')
+        //             ->add('save', SubmitType::class, [
+        //                 'label' => "créer la nouvelle annonce",
+        //                 "attr" => [
+        //                     'class' => 'btn btn-primary'
+        //                 ]
+        //             ])
+        //             ->getForm();
+        
+        $form = $this->createFormBuilder($ad)
+                    ->add('title')
+                    ->add('introduction')
+                    ->add('content')
+                    ->add('rooms')
+                    ->add('price')
+                    ->getForm();
 
+        return $this->render("ad/new.html.twig",[
+            'form' => $form->createView()
+        ]);
+    }
 
+    /**
+     * Permet d'afficher une annonce via son slug
+     */
     #[Route('/ads/{slug}', name:'ads_show')]
     public function show(string $slug, Ad $ad):Response
     {
@@ -43,4 +73,6 @@ class AdController extends AbstractController
             'ad' => $ad
         ]);
     }
+
+
 }

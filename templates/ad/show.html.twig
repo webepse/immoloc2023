@@ -3,7 +3,7 @@
 {% block title %}Annonce: {{ad.title}}{% endblock %}
 
 {% block body %}
-    <div class="annonce-title" style="backgound-image: url({{ad.coverImage}});">
+    <div class="annonce-title" style="background-image: url('{{ad.coverImage}}');">
         <div class="container">
             <h1>{{ad.title}}</h1>
             <p>{{ad.introduction}}</p>
@@ -52,7 +52,7 @@
             <div class="col">
                 <div class="row">
                     <div class="col-4">
-                        <img src="httsp://picsum.photos/64/64" alt="Avatar de Bruce">
+                        <img src="https://picsum.photos/64/64" alt="Avatar de Bruce">
                     </div>
                     <div class="col">
                         <h3>Bruce Wayne</h3>
