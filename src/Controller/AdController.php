@@ -43,6 +43,10 @@ class AdController extends AbstractController
         // Es-ce que mon formulaire à été soumis?
         if($form->isSubmitted() && $form->isValid())
         {
+            // pour récupèrer champs par champs
+            // $arrayForm = $request->request->all();
+            // dump($arrayForm['annonce']['title']);
+
             $manager->persist($ad);
             $manager->flush();
 
