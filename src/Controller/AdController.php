@@ -98,7 +98,7 @@ class AdController extends AbstractController
             {
                 $image->setAd($ad);
                 $manager->persist($image);
-
+            }
                 //$ad->setSlug("");
 
                 $manager->persist($ad);
@@ -110,7 +110,6 @@ class AdController extends AbstractController
                 );
 
                 return $this->redirectToRoute('ads_show',['slug'=>$ad->getSlug()]);
-            }
         }
 
 
