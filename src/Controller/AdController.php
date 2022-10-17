@@ -84,6 +84,43 @@ class AdController extends AbstractController
     }
 
     /**
+     * Permet de modifier une annonce
+     */
+    #[Route("/ads/{slug}/edit", name:'ads_edit')]
+    public function edit(Request $request, EntityManagerInterface $manager, Ad $ad):Response
+    {
+        $form = $this->createForm(AnnonceType::class, $ad);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+
+                //$ad->setSlug("");
+
+                $manager->persist($ad);
+                $manager->flush();
+
+                $this->addFlash(
+                    'success',
+                    "L'annonce <strong>{$ad->getTitle()}</strong> a bien été modifiée"
+                );
+
+                return $this->redirectToRoute('ads_show',['slug'=>$ad->getSlug()]);
+            }
+        }
+
+
+        return $this->render("ad/edit.html.twig",[
+            "ad" => $ad,
+            "myform" => $form->createView()
+        ]);
+    }
+
+    /**
      * Permet d'afficher une annonce via son slug
      */
     #[Route('/ads/{slug}', name:'ads_show')]
