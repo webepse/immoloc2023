@@ -38,19 +38,6 @@ class AdController extends AbstractController
     {
         $ad = new Ad();
 
-        // $image1 = new Image();
-        // $image1->setUrl('https://picsum.photos/400/200')
-        //     ->setCaption('Titre 1');
-        
-        // $ad->addImage($image1);   
-
-        // $image2 = new Image();
-        // $image2->setUrl('https://picsum.photos/400/200')
-        //     ->setCaption('Titre 2');
-        
-        // $ad->addImage($image2);    
-
-
         $form = $this->createForm(AnnonceType::class, $ad);
         // permet de récupèrer la requête et l'état du formulaire
         $form->handleRequest($request);
