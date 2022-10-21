@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AccountType;
 use App\Entity\PasswordUpdate;
+use App\Entity\UserImgModify;
+use App\Form\ImgModifyType;
 use App\Form\PasswordUpdateType;
 use App\Form\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -172,5 +174,83 @@ class AccountController extends AbstractController
         return $this->render("account/password.html.twig",[
             'myform' => $form->createView()
         ]);
+    }
+
+    /**
+     * Permet de modifier l'image de l'utilisateur
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route("/account/imgmodify", name:"account_modifimg")]
+    public function imgModify(Request $request, EntityManagerInterface $manager): Response
+    {
+        $imgModify = new UserImgModify();
+        $user = $this->getUser(); 
+        $form = $this->createForm(ImgModifyType::class, $imgModify);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            // supprimer l'image dans le dossier
+            if(!empty($user->getPicture()))
+            {
+                unlink($this->getParameter('uploads_directory').'/'.$user->getPicture());
+            }
+
+            $file = $form['newPicture']->getData();
+            if(!empty($file))
+            {
+                $originalFilename = pathinfo($file->getClientOriginalName(),PATHINFO_FILENAME);
+                $safeFilename = transliterator_transliterate('Any-Latin;Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
+                $newFilename = $safeFilename."-".uniqid().".".$file->guessExtension();
+                try{
+                    $file->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+                }catch(FileException $e)
+                {
+                    return $e->getMessage();
+                }
+                $user->setPicture($newFilename);
+            }
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre avatar a bien été modifié'
+            );
+
+            return $this->redirectToRoute('homepage');
+
+        }
+
+        return $this->render("account/imgModify.html.twig",[
+            'myform' => $form->createView()
+        ]);
+    }
+
+    #[Route("/account/delimg", name:'account_delimg')]
+    public function removeImg(EntityManagerInterface $manager): Response
+    {
+        $user = $this->getUser();
+        if(!empty($user->getPicture()))
+        {
+            unlink($this->getParameter('uploads_directory').'/'.$user->getPicture());
+            $user->setPicture('');
+            $manager->persist($user);
+            $manager->flush();
+
+            $this->addflash(
+                'success',
+                'Votre avatar a bien été supprimé'
+            );
+        }
+
+        return $this->redirectToRoute('homepage');
     }
 }
