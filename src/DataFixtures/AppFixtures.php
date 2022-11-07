@@ -26,6 +26,19 @@ class AppFixtures extends Fixture
         // $manager->persist($product);
         $faker = Factory::create('fr_FR');
 
+        // création d'un admin 
+        $admin = new User();
+        $admin->setFirstName('Jordan')
+            ->setLastName('Berti')
+            ->setEmail('berti@epse.be')
+            ->setPassword($this->passwordHasher->hashPassword($admin,'password'))
+            ->setIntroduction($faker->sentence())
+            ->setPicture('gow2.jpg')
+            ->setDescription('<p>'.join('</p><p>', $faker->paragraphs(3)).'</p>')
+            ->setRoles(['ROLE_ADMIN']);
+        
+        $manager->persist($admin);    
+
         // gestion des utilisateurs
         $users = []; // init un tableau pour récup les user pour les Ad
         $genres = ['male','femelle'];

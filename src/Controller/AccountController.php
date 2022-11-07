@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -117,6 +118,7 @@ class AccountController extends AbstractController
      * @return Response
      */
     #[Route("/account/profile", name:"account_profile")]
+    #[IsGranted("ROLE_USER")]
     public function profile(Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser(); // récup l'utilisateur connecté
@@ -158,6 +160,7 @@ class AccountController extends AbstractController
     }
 
     #[Route("/account/password-update", name:'account_password')]
+    #[IsGranted("ROLE_USER")]
     public function updatePassword(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $hasher): Response
     {
         $passwordUpdate = new PasswordUpdate();
@@ -203,6 +206,7 @@ class AccountController extends AbstractController
      * @return Response
      */
     #[Route("/account/imgmodify", name:"account_modifimg")]
+    #[IsGranted("ROLE_USER")]
     public function imgModify(Request $request, EntityManagerInterface $manager): Response
     {
         $imgModify = new UserImgModify();
@@ -254,6 +258,7 @@ class AccountController extends AbstractController
     }
 
     #[Route("/account/delimg", name:'account_delimg')]
+    #[IsGranted("ROLE_USER")]
     public function removeImg(EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
