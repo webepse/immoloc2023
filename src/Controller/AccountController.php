@@ -4,17 +4,18 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\AccountType;
-use App\Entity\PasswordUpdate;
-use App\Entity\UserImgModify;
 use App\Form\ImgModifyType;
-use App\Form\PasswordUpdateType;
+use App\Entity\UserImgModify;
+use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
+use App\Form\PasswordUpdateType;
+use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -119,11 +120,27 @@ class AccountController extends AbstractController
     public function profile(Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser(); // récup l'utilisateur connecté
+
+        // pour la validation des images ou utiliser une validation Groups
+        $fileName = $user->getPicture();
+        if(!empty($fileName))
+        {
+            $user->setPicture(
+                new File($this->getParameter('uploads_directory').'/'.$user->getPicture())
+            );
+        } 
+
         $form = $this->createForm(AccountType::class, $user);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
+            // gestion image 
+            $user->setPicture($fileName);
+
+            // gestion du slug 
+            $user->setSlug('');
+
             $manager->persist($user);
             $manager->flush();
 
@@ -131,6 +148,8 @@ class AccountController extends AbstractController
                 'success',
                 "Les données ont été enregistrées avec succès"
             );
+
+            return $this->redirectToRoute('account_index');
         }
 
         return $this->render("account/profile.html.twig",[
@@ -166,7 +185,7 @@ class AccountController extends AbstractController
                     "Votre mot de passe a bien été modifié"
                 );
 
-                return $this->redirectToRoute('homepage');
+                return $this->redirectToRoute('account_index');
             }
         }
 
@@ -225,7 +244,7 @@ class AccountController extends AbstractController
                 'Votre avatar a bien été modifié'
             );
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('account_index');
 
         }
 
@@ -251,6 +270,6 @@ class AccountController extends AbstractController
             );
         }
 
-        return $this->redirectToRoute('homepage');
+        return $this->redirectToRoute('account_index');
     }
 }
