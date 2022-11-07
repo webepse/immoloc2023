@@ -50,17 +50,27 @@
 
             </div>
             <div class="col">
+                {% set a = ad.author %}
                 <div class="row">
-                    <div class="col-4">
-                        <img src="https://picsum.photos/64/64" alt="Avatar de Bruce">
+                    <div class="col-3">
+                        <a href="{{path('user_show', {'slug': a.slug})}}">
+                            {% if a.picture %}
+                                <img src="/uploads/{{a.picture}}" alt="Avatar de {{a.fullName}}" class="avatar avatar-medium">
+                            {% else %}
+                                <img src="https://picsum.photos/300/300" alt="Avatar par défaut de {{a.fullName}}" class="avatar avatar-medium">
+                            {% endif %}
+                        </a>
+
                     </div>
-                    <div class="col">
-                        <h3>Bruce Wayne</h3>
-                        <span class="badge badge-primary bg-primary">3 Annonces</span>
+                    <div class="col mb-3">
+                        <a href="{{path('user_show', {'slug': a.slug})}}">
+                            <h3>{{a.fullName}}</h3>
+                        </a>
+                        <button type="button" class="btn btn-primary">
+                            Annonce(s) <span class="badge badge-secondary">{{a.ads | length }}</span>
+                        </button>
                     </div>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus ab beatae nobis vitae eos consequatur aliquam temporibus adipisci commodi expedita?</p>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus ab beatae nobis vitae eos consequatur aliquam temporibus adipisci commodi expedita?</p>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Delectus ab beatae nobis vitae eos consequatur aliquam temporibus adipisci commodi expedita?</p>
+                    {{a.description | raw | nl2br}}
                 </div>
 
             </div>
