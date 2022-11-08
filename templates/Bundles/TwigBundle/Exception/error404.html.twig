@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Cette ressource n'existe pas{% endblock %}
+
+{% block body %}
+    <div class="container full">
+        <h1>Oups! La page que vous recherchez n'existe pas ou plus ! </h1>
+        <p>On a surement du mal vous renseigner! Aucun soucis, vous pouvez retourner à l'accueil ou voir nos dernières annonces</p>
+        <a href="{{path('homepage')}}" class="btn btn-primary m-2">Retour à l'accueil</a>
+        <a href="{{path('ads_index')}}" class="btn btn-success m-2">Nos annonces</a>
+    </div>
+{% endblock %}
