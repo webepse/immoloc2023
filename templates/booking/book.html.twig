@@ -2,6 +2,10 @@
 
 {% block title %}Réserver l'annonce: {{ad.title}}{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker-bs4.min.css">
+{% endblock %}
+
 {% block body %}
     <div class="container full">
         <h1>Réservation de l'annonce: {{ad.title}}</h1>
@@ -25,4 +29,57 @@
         <button type="submit" class="btn btn-success">Réserver</button>
         {{form_end(myForm)}}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/datepicker.min.js"></script>
+    <script>
+        const bookingStartDate = document.querySelector('#booking_startDate')
+        const bookingEndDate = document.querySelector('#booking_endDate')
+        const datePickerStart = new Datepicker(bookingStartDate,{
+            format: 'dd/mm/yyyy',
+            datesDisabled: [
+                {% for day in ad.notAvailableDays %}
+                    "{{day.format('d/m/Y')}}",
+                {% endfor %}
+            ],
+            minDate: new Date()
+        })
+        const datePickerEnd = new Datepicker(bookingEndDate,{
+            format: 'dd/mm/yyyy',
+            datesDisabled: [
+                {% for day in ad.notAvailableDays %}
+                    "{{day.format('d/m/Y')}}",
+                {% endfor %}
+            ],
+            minDate: new Date()
+        })
+
+        bookingStartDate.addEventListener('changeDate', ()=>{
+            calculateAmount()
+        })
+
+        bookingEndDate.addEventListener('changeDate', ()=>{
+            calculateAmount()
+        })
+
+        const calculateAmount = () => {
+            let bookingStartDate = document.querySelector('#booking_startDate')
+            let bookingEndDate = document.querySelector('#booking_endDate')
+            const endDate = new Date(bookingEndDate.value.replace(/(\d+)\/(\d+)\/(\d{4})/,'$3-$2-$1'))
+            const startDate = new Date(bookingStartDate.value.replace(/(\d+)\/(\d+)\/(\d{4})/,'$3-$2-$1'))
+            if(startDate && endDate && startDate < endDate)
+            {
+                const interval = endDate.getTime() - startDate.getTime()
+                const days = interval / (24*60*60*1000)
+                const amount = days * {{ad.price}}
+
+                const myDays = document.querySelector('#days')
+                const myAmount = document.querySelector('#amount')
+                myDays.innerHTML = days
+                myAmount.innerHTML = amount.toLocaleString('fr-FR')
+            }
+        }
+
+    </script>
 {% endblock %}
