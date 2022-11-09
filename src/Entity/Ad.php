@@ -73,6 +73,33 @@ class Ad
         }
     }
 
+    /**
+     * Permet d'obtenir un tableau des jours qui ne sont pas disponibles pour cette annonces
+     *
+     * @return array|null
+     */
+    public function getNotAvailableDays(): ?array 
+    {
+        $notAvailableDays = [];
+        foreach($this->bookings as $booking)
+        {
+            // calculer les jours qui se trouvent entre la date d'arrivée et de départ
+            // la fonction range() de p hp permet de créer un tabelau qui contient chaque étape existance entre deux nombre
+            // $result = range(10,20,2)
+            // réponse: $resulat = [10,12,14,16,18,20];
+            $resultat = range($booking->getStartDate()->getTimestamp(),$booking->getEndDate()->getTimestamp(), 24*60*60);
+            // tableau [10,20,30,40,50]
+            // mapTableau [n+5, tableau]
+            // [15,25,35,45,55]
+            $days = array_map(function($dayTimestamp){
+                return new \DateTime(date('Y-m-d',$dayTimestamp));
+            }, $resultat);
+            $notAvailableDays = array_merge($notAvailableDays, $days);
+        }
+        return $notAvailableDays;
+
+    }
+
     public function getId(): ?int
     {
         return $this->id;
