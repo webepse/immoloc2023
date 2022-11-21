@@ -136,7 +136,7 @@ class AdController extends AbstractController
     public function show(string $slug, Ad $ad):Response
     {
         // dump($ad);
-
+        // dd($ad);
         return $this->render('ad/show.html.twig',[
             'ad' => $ad
         ]);
