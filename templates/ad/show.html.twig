@@ -20,7 +20,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 mb-3">
-                {{ad.content}}
+                {{ad.content | raw | nl2br }}
 
                 <div class="bd-example">
                     <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="false">

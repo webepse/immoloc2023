@@ -2,14 +2,16 @@
 
 namespace App\Entity;
 
-use App\Repository\AdRepository;
+use App\Entity\User;
+use App\Entity\Comment;
 use Cocur\Slugify\Slugify;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AdRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -120,6 +122,21 @@ class Ad
         }
         return $notAvailableDays;
 
+    }
+
+    /**
+     * Permet de récupérer le commentaire d'un auteur par rapport à une annnonce
+     *
+     * @param User $author
+     * @return Comment|null
+     */
+    public function getCommentFromAuthor(User $author): ?Comment
+    {
+        foreach($this->comments as $comment){
+            if($comment->getAuthor() === $author) return $comment;
+        }
+
+        return null;
     }
 
     public function getId(): ?int
