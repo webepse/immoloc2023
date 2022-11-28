@@ -1,0 +1,25 @@
+{% extends "admin/base.html.twig" %}
+{% block title %}Modification du commentaire {{comment.id}}{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1 class="my-5">Modification du commentaire {{comment.id}}</h1>
+    <a href="{{path('admin_comments_index')}}" class="btn btn-secondary my-3">Retour</a>
+    <a href="{{path('admin_ads_edit',{'id': comment.ad.id})}}" class="btn btn-primary my-3">Retour à l'annonce</a>
+    <div class="bg-light p-3 my-3">
+        <p>
+            <strong>Annonce liée: </strong>{{comment.ad.title}}
+        </p>
+        <p>
+            <strong>Auteur: </strong>{{comment.author.fullName}}
+        </p>
+        <p>
+            <strong>Date de création: </strong>{{comment.createdAt | date('d/m/Y H:i')}}
+        </p>
+    </div>
+    {{form_start(myForm)}}
+        {{form_widget(myForm)}}
+        <button type="submit" class="btn btn-warning"><i class="fas fa-check"></i> Modifier le commentaire</button>
+    {{form_end(myForm)}}
+</div>
+{% endblock %}
