@@ -17,13 +17,32 @@ class AdminAdController extends AbstractController
      * Permet d'afficher les annonces pour l'administration
      *
      * @param AdRepository $repo
+     * @param int $page
      * @return Response
      */
-    #[Route('/admin/ads', name: 'admin_ads_index')]
-    public function index(AdRepository $repo): Response
+    #[Route('/admin/ads/{page?1}', name: 'admin_ads_index', requirements:['page'=>"\d+"])]
+    public function index(AdRepository $repo, $page): Response
     {
+        // $ad = $repo->find(531);
+        // $ad = $repo->findBy([
+        //     "title" => "annonce"
+        // ]);
+        // findBy = 1) critère 2) orders 3) limit 4) offset
+        // $ads = $repo->findBy([],[], 5, 0)
+
+        $limit = 10;
+        $start = $page * $limit - $limit;
+        // page 1 * 10 = 10 -10 = 0
+        // page 2 * 10 = 20 - 10 = 10
+        $total = count($repo->findAll());
+        // 3.1 = 4
+        $pages = ceil($total / $limit);
+
+
         return $this->render('admin/ad/index.html.twig', [
-            'ads' => $repo->findAll(),
+            'ads' => $repo->findBy([],[],$limit, $start),
+            'pages' => $pages,
+            'page' => $page
         ]);
     }
 
