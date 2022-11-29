@@ -28,7 +28,7 @@
                         <td>{{booking.amount}}€</td>
                         <td class="text-center">
                             <a href="{{path('admin_bookings_edit',{'id':booking.id})}}" class="btn btn-warning"><i class="fas fa-pen"></i></a>
-                            <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                            <a href="{{path('admin_bookings_delete',{'id':booking.id})}}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                         </td>
                     </tr>
                 {% endfor %}
