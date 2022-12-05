@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ad;
 use App\Form\AnnonceType;
 use App\Repository\AdRepository;
+use App\Service\PaginationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,33 +17,20 @@ class AdminAdController extends AbstractController
     /**
      * Permet d'afficher les annonces pour l'administration
      *
-     * @param AdRepository $repo
+     * @param PaginationService $pagination
      * @param int $page
      * @return Response
      */
-    #[Route('/admin/ads/{page?1}', name: 'admin_ads_index', requirements:['page'=>"\d+"])]
-    public function index(AdRepository $repo, $page): Response
+    #[Route('/admin/ads/{page<\d+>?1}', name: 'admin_ads_index')]
+    public function index(PaginationService $pagination, $page): Response
     {
-        // $ad = $repo->find(531);
-        // $ad = $repo->findBy([
-        //     "title" => "annonce"
-        // ]);
-        // findBy = 1) critère 2) orders 3) limit 4) offset
-        // $ads = $repo->findBy([],[], 5, 0)
-
-        $limit = 10;
-        $start = $page * $limit - $limit;
-        // page 1 * 10 = 10 -10 = 0
-        // page 2 * 10 = 20 - 10 = 10
-        $total = count($repo->findAll());
-        // 3.1 = 4
-        $pages = ceil($total / $limit);
+       $pagination->setEntityClass(Ad::class)
+                ->setPage($page)
+                ->setLimit(10);
 
 
         return $this->render('admin/ad/index.html.twig', [
-            'ads' => $repo->findBy([],[],$limit, $start),
-            'pages' => $pages,
-            'page' => $page
+            'pagination' => $pagination
         ]);
     }
 

@@ -1,7 +1,5 @@
  {# pour la pagination #}
 <div class="d-flex justify-content-center">
-    {% set pages = pagination.pages %}
-    {% set page = pagination.page %}
     <ul class="pagination pagination-sm">
         <li class="page-item {% if page == 1 %}disabled{% endif %}">
             <a class="page-link" href="{{path(route,{'page': page - 1})}}">&laquo;</a>
